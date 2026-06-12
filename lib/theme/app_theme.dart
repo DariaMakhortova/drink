@@ -111,11 +111,12 @@ ThemeData buildAppTheme() {
     ),
 
     navigationBarTheme: NavigationBarThemeData(
+      height: 60,
       backgroundColor: Colors.white,
       elevation: 0,
       indicatorColor: mochaEarth.withOpacity(0.12),
       labelTextStyle: WidgetStateProperty.all(
-        const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+        const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
       ),
     ),
 

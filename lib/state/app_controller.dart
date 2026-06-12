@@ -99,6 +99,15 @@ class AppController extends ChangeNotifier {
     return null;
   }
 
+  List<Drink> get favoriteDrinks {
+    final items = _drinks.where((d) => _favoriteDrinkIds.contains(d.id));
+    return items.toList()..sort((a, b) {
+      if (a.isPopular && !b.isPopular) return -1;
+      if (!a.isPopular && b.isPopular) return 1;
+      return a.name.compareTo(b.name);
+    });
+  }
+
   // ── Auth ──────────────────────────────────────────────
   Future<void> register({
     required String name,

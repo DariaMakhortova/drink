@@ -46,16 +46,30 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _searchController,
-          autofocus: true,
-          onChanged: (value) => setState(() => _query = value),
-          decoration: const InputDecoration(
-            hintText: 'Поиск напитков...',
-            border: InputBorder.none,
-            hintStyle: TextStyle(color: Color(0xFF7A6E69)),
-          ),
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            final isSmall = constraints.maxWidth < 360;
+            return TextField(
+              controller: _searchController,
+              autofocus: true,
+              onChanged: (value) => setState(() => _query = value),
+              decoration: InputDecoration(
+                hintText: isSmall ? 'Поиск...' : 'Поиск напитков...',
+                border: InputBorder.none,
+                hintStyle: TextStyle(
+                  color: const Color(0xFF7A6E69),
+                  fontSize: isSmall ? 14 : 16,
+                ),
+                contentPadding: isSmall
+                    ? const EdgeInsets.symmetric(vertical: 8)
+                    : EdgeInsets.zero,
+              ),
+              style: TextStyle(
+                fontSize: isSmall ? 16 : 18,
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          },
         ),
         actions: [
           if (_query.isNotEmpty)
