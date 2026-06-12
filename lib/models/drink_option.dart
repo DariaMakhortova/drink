@@ -1,5 +1,4 @@
 // lib/models/drink_options.dart
-
 enum DrinkSize { small, medium, large }
 
 extension DrinkSizeX on DrinkSize {
@@ -26,6 +25,13 @@ extension DrinkSizeX on DrinkSize {
   }
 }
 
+DrinkSize drinkSizeFromName(String? value) {
+  return DrinkSize.values.firstWhere(
+    (item) => item.name == value,
+    orElse: () => DrinkSize.medium,
+  );
+}
+
 enum IceLevel { none, normal, extra }
 
 extension IceLevelX on IceLevel {
@@ -39,6 +45,13 @@ extension IceLevelX on IceLevel {
         return 'Много льда';
     }
   }
+}
+
+IceLevel iceLevelFromName(String? value) {
+  return IceLevel.values.firstWhere(
+    (item) => item.name == value,
+    orElse: () => IceLevel.normal,
+  );
 }
 
 enum SugarLevel { zero, quarter, half, full }
@@ -56,6 +69,13 @@ extension SugarLevelX on SugarLevel {
         return '100%';
     }
   }
+}
+
+SugarLevel sugarLevelFromName(String? value) {
+  return SugarLevel.values.firstWhere(
+    (item) => item.name == value,
+    orElse: () => SugarLevel.half,
+  );
 }
 
 class DrinkOption {
@@ -101,18 +121,9 @@ class DrinkOption {
 
   factory DrinkOption.fromMap(Map<String, dynamic> map) {
     return DrinkOption(
-      size: DrinkSize.values.firstWhere(
-        (e) => e.name == map['size'],
-        orElse: () => DrinkSize.medium,
-      ),
-      iceLevel: IceLevel.values.firstWhere(
-        (e) => e.name == map['iceLevel'],
-        orElse: () => IceLevel.normal,
-      ),
-      sugarLevel: SugarLevel.values.firstWhere(
-        (e) => e.name == map['sugarLevel'],
-        orElse: () => SugarLevel.half,
-      ),
+      size: drinkSizeFromName(map['size'] as String?),
+      iceLevel: iceLevelFromName(map['iceLevel'] as String?),
+      sugarLevel: sugarLevelFromName(map['sugarLevel'] as String?),
       extras: (map['extras'] as List<dynamic>? ?? const <dynamic>[])
           .map((item) => item.toString())
           .toList(),

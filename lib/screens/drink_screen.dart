@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/drink.dart';
 import '../models/drink_option.dart';
+import '../models/drink_customization.dart';
 import '../state/app_controller.dart';
 import '../widgets/info_row.dart';
 import '../widgets/extra_chip.dart';
 import '../widgets/quantity_stepper.dart';
+import '../models/extras.dart';
 
 class DrinkScreen extends StatefulWidget {
   const DrinkScreen({super.key, required this.controller, required this.drink});
@@ -16,6 +18,7 @@ class DrinkScreen extends StatefulWidget {
 }
 
 class _DrinkScreenState extends State<DrinkScreen> {
+  late DrinkCustomization _customization;
   DrinkSize _size = DrinkSize.medium;
   IceLevel _iceLevel = IceLevel.normal;
   SugarLevel _sugarLevel = SugarLevel.half;
@@ -24,31 +27,23 @@ class _DrinkScreenState extends State<DrinkScreen> {
   int _quantity = 1;
 
   @override
+  void initState() {
+    super.initState();
+    _customization = DrinkCustomization.forDrink(widget.drink);
+  }
+
+  @override
   void dispose() {
     _noteController.dispose();
     super.dispose();
   }
 
   int _extraPrice(String extra) {
-    switch (extra) {
-      case 'tapioca':
-        return 40;
-      case 'sirup':
-        return 25;
-      case 'oat_milk':
-        return 35;
-      case 'berry':
-        return 30;
-      case 'espresso':
-        return 45;
-      default:
-        return 0;
-    }
+    return Extras.getPrice(extra);
   }
 
   int get _extrasPrice =>
       _extras.fold<int>(0, (sum, extra) => sum + _extraPrice(extra));
-
   int get _totalPrice =>
       (widget.drink.price + _size.extraPrice + _extrasPrice) * _quantity;
 
@@ -123,6 +118,7 @@ class _DrinkScreenState extends State<DrinkScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           children: <Widget>[
+            // Карточка напитка
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -192,97 +188,122 @@ class _DrinkScreenState extends State<DrinkScreen> {
               carbs: drink.carbs,
             ),
             const SizedBox(height: 16),
-            _Section(
-              title: 'Размер',
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: DrinkSize.values.map((size) {
-                  return ChoiceChip(
-                    label: Text(size.label),
-                    selected: _size == size,
-                    onSelected: (_) => setState(() => _size = size),
-                  );
-                }).toList(),
-              ),
-            ),
-            _Section(
-              title: 'Лёд',
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: IceLevel.values.map((ice) {
-                  return ChoiceChip(
-                    label: Text(ice.label),
-                    selected: _iceLevel == ice,
-                    onSelected: (_) => setState(() => _iceLevel = ice),
-                  );
-                }).toList(),
-              ),
-            ),
-            _Section(
-              title: 'Сахар',
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: SugarLevel.values.map((sugar) {
-                  return ChoiceChip(
-                    label: Text(sugar.label),
-                    selected: _sugarLevel == sugar,
-                    onSelected: (_) => setState(() => _sugarLevel = sugar),
-                  );
-                }).toList(),
-              ),
-            ),
-            _Section(
-              title: 'Добавки',
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: <Widget>[
-                  ExtraChip(
-                    label: 'Тапиока',
-                    selected: _extras.contains('tapioca'),
-                    onTap: () => _toggleExtra('tapioca'),
-                    priceLabel: '+40 ₽',
-                  ),
-                  ExtraChip(
-                    label: 'Сироп',
-                    selected: _extras.contains('sirup'),
-                    onTap: () => _toggleExtra('sirup'),
-                    priceLabel: '+25 ₽',
-                  ),
-                  ExtraChip(
-                    label: 'Овсяное молоко',
-                    selected: _extras.contains('oat_milk'),
-                    onTap: () => _toggleExtra('oat_milk'),
-                    priceLabel: '+35 ₽',
-                  ),
-                  ExtraChip(
-                    label: 'Ягоды',
-                    selected: _extras.contains('berry'),
-                    onTap: () => _toggleExtra('berry'),
-                    priceLabel: '+30 ₽',
-                  ),
-                  ExtraChip(
-                    label: 'Шот эспрессо',
-                    selected: _extras.contains('espresso'),
-                    onTap: () => _toggleExtra('espresso'),
-                    priceLabel: '+45 ₽',
-                  ),
-                ],
-              ),
-            ),
-            _Section(
-              title: 'Комментарий',
-              child: TextField(
-                controller: _noteController,
-                maxLines: 3,
-                decoration: const InputDecoration(
-                  hintText: 'Например: без трубочки, очень холодный',
+
+            // Размер (показывается всегда)
+            if (_customization.showSize)
+              _Section(
+                title: 'Размер',
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: DrinkSize.values.map((size) {
+                    return ChoiceChip(
+                      label: Text(size.label),
+                      selected: _size == size,
+                      onSelected: (_) => setState(() => _size = size),
+                    );
+                  }).toList(),
                 ),
               ),
-            ),
+
+            // Лёд (только для холодных напитков)
+            if (_customization.showIce)
+              _Section(
+                title: 'Лёд',
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: IceLevel.values.map((ice) {
+                    return ChoiceChip(
+                      label: Text(ice.label),
+                      selected: _iceLevel == ice,
+                      onSelected: (_) => setState(() => _iceLevel = ice),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+            // Сахар (не для лимонадов)
+            if (_customization.showSugar)
+              _Section(
+                title: 'Сахар',
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: SugarLevel.values.map((sugar) {
+                    return ChoiceChip(
+                      label: Text(sugar.label),
+                      selected: _sugarLevel == sugar,
+                      onSelected: (_) => setState(() => _sugarLevel = sugar),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+            // Добавки (только для кофе и матчи)
+if (_customization.showToppings ||
+                _customization.showSyrups ||
+                _customization.showMilk)
+              _Section(
+                title: 'Добавки',
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: <Widget>[
+                    if (_customization.showToppings)
+                      ExtraChip(
+                        label: Extras.getLabel('tapioca'),
+                        selected: _extras.contains('tapioca'),
+                        onTap: () => _toggleExtra('tapioca'),
+                        priceLabel: '+${Extras.getPrice('tapioca')} ₽',
+                      ),
+                    if (_customization.showSyrups)
+                      ExtraChip(
+                        label: Extras.getLabel('sirup'),
+                        selected: _extras.contains('sirup'),
+                        onTap: () => _toggleExtra('sirup'),
+                        priceLabel: '+${Extras.getPrice('sirup')} ₽',
+                      ),
+                    if (_customization.showMilk)
+                      ExtraChip(
+                        label: Extras.getLabel('oat_milk'),
+                        selected: _extras.contains('oat_milk'),
+                        onTap: () => _toggleExtra('oat_milk'),
+                        priceLabel: '+${Extras.getPrice('oat_milk')} ₽',
+                      ),
+                    if (_customization.showToppings)
+                      ExtraChip(
+                        label: Extras.getLabel('berry'),
+                        selected: _extras.contains('berry'),
+                        onTap: () => _toggleExtra('berry'),
+                        priceLabel: '+${Extras.getPrice('berry')} ₽',
+                      ),
+                    if (_customization.showSyrups &&
+                        drink.category == DrinkCategory.coffee)
+                      ExtraChip(
+                        label: Extras.getLabel('espresso'),
+                        selected: _extras.contains('espresso'),
+                        onTap: () => _toggleExtra('espresso'),
+                        priceLabel: '+${Extras.getPrice('espresso')} ₽',
+                      ),
+                  ],
+                ),
+              ),
+
+            // Комментарий (всегда)
+            if (_customization.showNote)
+              _Section(
+                title: 'Комментарий',
+                child: TextField(
+                  controller: _noteController,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    hintText: 'Например: без трубочки, очень холодный',
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: 10),
             _Section(
               title: 'Количество',
               child: Row(

@@ -5,7 +5,6 @@ ThemeData buildAppTheme() {
   const mochaEarth = Color(0xFF4B3935);
 
   const surface = Colors.white;
-  const surfaceSoft = Color(0xFFF7FAFC);
   const outline = Color(0xFFD4DDE3);
   const textPrimary = Color(0xFF2F2623);
   const textMuted = Color(0xFF73655F);

@@ -1,5 +1,6 @@
 import 'drink.dart';
 import 'drink_option.dart';
+import 'extras.dart';
 
 class CartItem {
   const CartItem({
@@ -19,25 +20,7 @@ class CartItem {
   int get extrasPrice {
     int sum = 0;
     for (final extra in option.extras) {
-      switch (extra) {
-        case 'tapioca':
-          sum += 40;
-          break;
-        case 'sirup':
-          sum += 25;
-          break;
-        case 'oat_milk':
-          sum += 35;
-          break;
-        case 'berry':
-          sum += 30;
-          break;
-        case 'espresso':
-          sum += 45;
-          break;
-        default:
-          sum += 0;
-      }
+      sum += Extras.getPrice(extra);
     }
     return sum;
   }

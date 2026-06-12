@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Шапка с приветствием и поиском
+                // Шапка с приветствием и поиском (без кнопки выхода)
                 Row(
                   children: [
                     Expanded(

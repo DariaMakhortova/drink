@@ -35,29 +35,6 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-  String? _validateName(String? value) {
-    if (_isLogin) return null;
-    final text = value?.trim() ?? '';
-    if (text.isEmpty) return 'Введите имя.';
-    if (text.length < 2) return 'Имя должно быть не короче 2 символов.';
-    return null;
-  }
-
-  String? _validateEmail(String? value) {
-    final text = value?.trim() ?? '';
-    if (text.isEmpty) return 'Введите почту.';
-    final pattern = RegExp(r'^[\w\.\-]+@[\w\.\-]+\.\w+$');
-    if (!pattern.hasMatch(text)) return 'Введите корректный email.';
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    final text = value?.trim() ?? '';
-    if (text.isEmpty) return 'Введите пароль.';
-    if (text.length < 6) return 'Пароль должен быть не короче 6 символов.';
-    return null;
-  }
-
   Future<void> _submit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
@@ -95,9 +72,32 @@ class _AuthScreenState extends State<AuthScreen> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError
             ? Colors.redAccent
-            : const Color(0xFF4B3935), // Mocha Earth
+            : Theme.of(context).colorScheme.primary,
       ),
     );
+  }
+
+  String? _validateName(String? value) {
+    if (_isLogin) return null;
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Введите имя.';
+    if (text.length < 2) return 'Имя должно быть не короче 2 символов.';
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Введите почту.';
+    final pattern = RegExp(r'^[\w\.\-]+@[\w\.\-]+\.\w+$');
+    if (!pattern.hasMatch(text)) return 'Введите корректный email.';
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Введите пароль.';
+    if (text.length < 6) return 'Пароль должен быть не короче 6 символов.';
+    return null;
   }
 
   @override
@@ -107,12 +107,13 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: <Color>[
-              Color(0xFFCBDFEA), // Frosty Ske
+              Color(0xFFCBDFEA),
               Color(0xFFDCEBF3),
               Color(0xFFF4F8FB),
             ],
@@ -124,10 +125,10 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // Иконка приложения
+                // Круглая иконка
                 Container(
-                  width: 64,
-                  height: 64,
+                  width: 72,
+                  height: 72,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.3),
                     shape: BoxShape.circle,
@@ -135,11 +136,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: const Icon(
                     Icons.local_cafe_rounded,
                     color: Color(0xFF4B3935),
-                    size: 32,
+                    size: 36,
                   ),
                 ),
                 const SizedBox(height: 18),
-
                 // Заголовок
                 const Text(
                   'Drink Flow',
@@ -160,12 +160,11 @@ class _AuthScreenState extends State<AuthScreen> {
                     height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 24),
-
+                const SizedBox(height: 22),
                 // Белая карточка с формой
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white.withOpacity(0.98),
                     borderRadius: BorderRadius.circular(32),
                     boxShadow: const <BoxShadow>[
                       BoxShadow(
@@ -176,7 +175,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -211,7 +210,6 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-
                           // Поле имени (только для регистрации)
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 220),
@@ -234,7 +232,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                     ),
                                   ),
                           ),
-
                           // Поле email
                           TextFormField(
                             controller: _emailController,
@@ -248,7 +245,6 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                           const SizedBox(height: 14),
-
                           // Поле пароля
                           TextFormField(
                             controller: _passwordController,
@@ -274,8 +270,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
-
+                          const SizedBox(height: 18),
                           // Кнопка отправки
                           FilledButton(
                             onPressed: _isSubmitting ? null : _submit,
@@ -291,7 +286,6 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-
                           // Кнопка переключения режима
                           TextButton(
                             onPressed: () => _switchMode(!_isLogin),
@@ -315,7 +309,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
-// Вспомогательный виджет кнопки-переключателя (только для этого файла)
+// Вспомогательный виджет кнопки-переключателя
 class _ModeButton extends StatelessWidget {
   const _ModeButton({
     required this.label,
@@ -331,7 +325,7 @@ class _ModeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = const Color(0xFF4B3935); // Mocha Earth
+    final activeColor = const Color(0xFF4B3935);
 
     return InkWell(
       onTap: onTap,
