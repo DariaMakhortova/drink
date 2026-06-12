@@ -1,5 +1,4 @@
 import 'drink.dart';
-import 'drink_option.dart';
 
 class DrinkCustomization {
   final bool showSize;

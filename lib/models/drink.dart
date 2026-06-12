@@ -41,6 +41,7 @@ class Drink {
     required this.isSeasonal,
     required this.isCold,
     required this.imageEmoji,
+    this.imageAsset, 
   });
 
   final String id;
@@ -59,6 +60,7 @@ class Drink {
   final bool isCold;
 
   final String imageEmoji;
+  final String? imageAsset; 
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -75,6 +77,7 @@ class Drink {
       'isSeasonal': isSeasonal,
       'isCold': isCold,
       'imageEmoji': imageEmoji,
+      'imageAsset': imageAsset,
     };
   }
 
@@ -95,6 +98,7 @@ class Drink {
       isSeasonal: map['isSeasonal'] as bool? ?? false,
       isCold: map['isCold'] as bool? ?? true,
       imageEmoji: map['imageEmoji'] as String? ?? '🥤',
+      imageAsset: map['imageAsset'] as String?, 
     );
   }
 }

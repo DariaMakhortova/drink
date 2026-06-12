@@ -154,7 +154,8 @@ const List<Drink> mockDrinks = <Drink>[
     isPopular: true,
     isSeasonal: false,
     isCold: false,
-    imageEmoji: '🍓',
+    imageEmoji: '',
+    imageAsset: 'assets/images/латте_сырная_пенка.jpg', 
   ),
   Drink(
     id: 'raspberry_mocha',
