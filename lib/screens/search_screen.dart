@@ -60,9 +60,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   color: const Color(0xFF7A6E69),
                   fontSize: isSmall ? 14 : 16,
                 ),
-                contentPadding: isSmall
-                    ? const EdgeInsets.symmetric(vertical: 8)
-                    : EdgeInsets.zero,
+                contentPadding: EdgeInsets.only(
+                  left: 8, 
+                  top: 12,
+                  bottom: 12,
+                ),
               ),
               style: TextStyle(
                 fontSize: isSmall ? 16 : 18,

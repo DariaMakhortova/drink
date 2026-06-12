@@ -90,7 +90,7 @@ class _DrinkScreenState extends State<DrinkScreen> {
         behavior: SnackBarBehavior.floating,
       ),
     );
-    widget.controller.setSelectedTab(1);
+    widget.controller.setSelectedTab(2);
     Navigator.of(context).pop();
   }
 
