@@ -19,7 +19,6 @@ class DrinkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Определяем, широкая карточка (1 колонка) или узкая (2-3 колонки)
         final isWide = constraints.maxWidth > 300;
 
         return InkWell(
@@ -90,11 +89,6 @@ class DrinkCard extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 6),
-              Text(
-                drink.category.label,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF7A6E69)),
               ),
               const SizedBox(height: 12),
               Row(
@@ -168,11 +162,6 @@ class DrinkCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
-        const SizedBox(height: 2),
-        Text(
-          drink.category.label,
-          style: const TextStyle(fontSize: 11, color: Color(0xFF7A6E69)),
         ),
         const Spacer(),
         Row(

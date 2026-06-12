@@ -19,18 +19,7 @@ class AppShell extends StatelessWidget {
         ];
 
         return Scaffold(
-          appBar: controller.selectedTabIndex == 0
-              ? null
-              : AppBar(
-                  title: const Text('Корзина'),
-                  actions: <Widget>[
-                    IconButton(
-                      tooltip: 'Выйти',
-                      onPressed: controller.logout,
-                      icon: const Icon(Icons.logout_rounded),
-                    ),
-                  ],
-                ),
+          // Убираем AppBar полностью — заголовки теперь внутри экранов
           body: IndexedStack(
             index: controller.selectedTabIndex,
             children: screens,
